@@ -1,0 +1,6 @@
+channels:
+  conda-forge
+packages:
+  - pytest
+  - pytest-benchmark
+  - pytest-xdist
