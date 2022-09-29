@@ -4,3 +4,8 @@ packages:
   - pytest
   - pytest-benchmark
   - pytest-xdist
+  - xarray
+  - netCDF4
+  - matplotlib
+  - yapf
+  - toml
