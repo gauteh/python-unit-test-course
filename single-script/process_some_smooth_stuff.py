@@ -2,6 +2,7 @@ import xarray as xr
 import numpy as np
 import scipy.signal as signal
 import matplotlib.pyplot as plt
+import pytest
 
 def smooth(F, d=3):
     """
@@ -11,6 +12,10 @@ def smooth(F, d=3):
     mask = np.ones((d, d)) / (d*d)
     F = signal.convolve2d(F, mask, mode='same', boundary='wrap')
 
+    return F
+
+def faulty_smooth(F, d=3):
+    F = 2. * F  # subtle.
     return F
 
 def main():
@@ -28,6 +33,7 @@ def test_smooth_const_almost():
     assert F.shape == sF.shape
     np.testing.assert_almost_equal(F, sF)
 
+@pytest.mark.xfail
 def test_smooth_const_exactly():
     F = np.ones((10, 10))
     sF = smooth(F)
@@ -36,6 +42,15 @@ def test_smooth_const_exactly():
 def test_load_data():
     ds = xr.open_dataset('https://thredds.met.no/thredds/dodsC/sea/norkyst800m/1h/aggregate_be')
     print(ds)
+
+@pytest.mark.xfail
+def test_faulty_smooth_w():
+    ds = xr.open_dataset('https://thredds.met.no/thredds/dodsC/sea/norkyst800m/1h/aggregate_be')
+    v = ds.v[32, 4, :, :]
+    print(v.values[:])
+    vS = faulty_smooth(v, d=15)
+
+    assert np.nanvar(vS) < np.nanvar(v), "Variance of smoothed field should be less than original."
 
 def test_smooth_w(plot):
     ds = xr.open_dataset('https://thredds.met.no/thredds/dodsC/sea/norkyst800m/1h/aggregate_be')
