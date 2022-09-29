@@ -1,11 +1,15 @@
+name: python-unit-test-workshop
 channels:
-  conda-forge
-packages:
+  - conda-forge
+dependencies:
   - pytest
   - pytest-benchmark
   - pytest-xdist
+  - pytest-mpl
   - xarray
   - netCDF4
   - matplotlib
   - yapf
   - toml
+  - numpy
+  - scipy
